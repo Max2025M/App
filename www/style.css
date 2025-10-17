@@ -1,0 +1,14 @@
+body { font-family:"Poppins",sans-serif; background:#f3f3f3; margin:0; padding:0; display:flex; flex-direction:column; align-items:center; }
+header { width:100%; background:linear-gradient(90deg,#00c6ff,#0072ff); color:white; text-align:center; padding:15px 0; font-size:1.3rem; position:relative; }
+.sim-info { position:absolute; right:10px; top:15px; font-size:0.9rem; opacity:0.9; }
+main { width:90%; max-width:500px; background:white; padding:20px; margin-top:25px; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+textarea,input,button { width:100%; margin-top:10px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem; }
+button { background:linear-gradient(90deg,#00c6ff,#0072ff); color:white; border:none; cursor:pointer; transition:0.3s; }
+button:hover { opacity:0.8; }
+.status-container { margin-top:20px; }
+.status-card { background:#f9f9f9; border:1px solid #ddd; border-radius:10px; padding:10px; margin-top:10px; display:flex; flex-direction:column; gap:5px; }
+.status-success { color:green; font-weight:bold; }
+.status-error { color:red; font-weight:bold; }
+.btn-small { background:#0072ff; color:white; border:none; padding:5px 10px; border-radius:6px; font-size:0.9rem; cursor:pointer; }
+.btn-small:hover { opacity:0.8; }
+@media (max-width:600px) { main{width:95%} header{font-size:1.1rem} }
