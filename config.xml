@@ -1,18 +1,32 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.exemplo.smsapp" version="1.0.0"
         xmlns="http://www.w3.org/ns/widgets"
-        xmlns:cdv="http://cordova.apache.org/ns/1.0">
+        xmlns:cdv="http://cordova.apache.org/ns/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
   <name>SMSApp</name>
   <description>Envio de SMS via SIM escolhido</description>
   <author email="voce@exemplo.com" href="http://exemplo.com">Voce</author>
   <content src="index.html" />
 
+  <preference name="Fullscreen" value="true" />
+  <preference name="AndroidPersistentFileLocation" value="Internal" />
+
   <platform name="android">
+    <!-- Permitir links SMS -->
     <allow-intent href="sms:*" />
+
+    <!-- Permissões Android necessárias -->
     <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
       <uses-permission android:name="android.permission.SEND_SMS" />
       <uses-permission android:name="android.permission.READ_PHONE_STATE" />
       <uses-permission android:name="android.permission.READ_SMS" />
     </edit-config>
+
+    <!-- Permissão opcional para receber SMS (se usar plugin de leitura) -->
+    <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
+      <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    </edit-config>
   </platform>
+
 </widget>
