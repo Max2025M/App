@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envio de SMS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  Envio de SMS
+  <div class="sim-info">SIM: Selecione ao enviar</div>
+</header>
+
+<main>
+  <label for="numeros">Números de telefone:</label>
+  <textarea id="numeros" rows="3" placeholder="Ex: 841234567,842345678"></textarea>
+
+  <label for="mensagem">Digite a mensagem:</label>
+  <textarea id="mensagem" rows="3" placeholder="Escreva sua mensagem aqui..."></textarea>
+
+  <button id="enviar">Iniciar envio</button>
+
+  <div class="status-container" id="statusContainer"></div>
+</main>
+
+<script src="cordova.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
