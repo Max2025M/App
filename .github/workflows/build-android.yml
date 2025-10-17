@@ -1,16 +1,16 @@
 name: Build Android APK
 
+# Executar manualmente
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -33,7 +33,8 @@ jobs:
       run: cordova build android --release
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: smsApp-release-apk
         path: platforms/android/app/build/outputs/apk/release/app-release.apk
+
