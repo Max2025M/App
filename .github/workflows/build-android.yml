@@ -1,6 +1,5 @@
-name: Build Android APK
+name: Build Android APK Assinado Automaticamente
 
-# Executar manualmente
 on:
   workflow_dispatch:
 
@@ -32,11 +31,46 @@ jobs:
     - name: Add SMS plugin
       run: cordova plugin add cordova-plugin-sms-receiver-sender || true
 
-    - name: Build APK
+    - name: Build APK unsigned
       run: cordova build android --release -- --packageType=apk
 
-    - name: Upload APK
+    - name: Gerar keystore temporário
+      run: |
+        KEYSTORE_FILE="temp-release-key.keystore"
+        KEY_ALIAS="tempkey"
+        STOREPASS="123456"
+        KEYPASS="123456"
+        keytool -genkeypair -v \
+          -keystore $KEYSTORE_FILE \
+          -alias $KEY_ALIAS \
+          -keyalg RSA -keysize 2048 \
+          -validity 10000 \
+          -storepass $STOREPASS \
+          -keypass $KEYPASS \
+          -dname "CN=Temp, OU=Dev, O=GitHub, L=City, S=State, C=PT"
+        echo "KEYSTORE_FILE=$KEYSTORE_FILE" >> $GITHUB_ENV
+        echo "KEY_ALIAS=$KEY_ALIAS" >> $GITHUB_ENV
+        echo "STOREPASS=$STOREPASS" >> $GITHUB_ENV
+        echo "KEYPASS=$KEYPASS" >> $GITHUB_ENV
+
+    - name: Sign APK
+      run: |
+        jarsigner -verbose \
+          -sigalg SHA1withRSA -digestalg SHA1 \
+          -keystore $KEYSTORE_FILE \
+          -storepass $STOREPASS \
+          -keypass $KEYPASS \
+          platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
+
+    - name: Align APK
+      run: |
+        sudo apt-get install -y zipalign
+        zipalign -v 4 \
+          platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk \
+          platforms/android/app/build/outputs/apk/release/app-release-signed.apk
+
+    - name: Upload APK assinado
       uses: actions/upload-artifact@v4
       with:
-        name: smsApp-release-apk
-        path: platforms/android/app/build/outputs/apk/release/app-release.apk
+        name: smsApp-release-signed-apk
+        path: platforms/android/app/build/outputs/apk/release/app-release-signed.apk
