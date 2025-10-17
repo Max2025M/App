@@ -23,8 +23,11 @@ jobs:
     - name: Install project dependencies
       run: npm install
 
+    - name: Remove Android platform (limpar cache)
+      run: cordova platform rm android || true
+
     - name: Add Android platform
-      run: cordova platform add android || true
+      run: cordova platform add android
 
     - name: Add SMS plugin
       run: cordova plugin add cordova-plugin-sms-receiver-sender || true
@@ -37,4 +40,3 @@ jobs:
       with:
         name: smsApp-release-apk
         path: platforms/android/app/build/outputs/apk/release/app-release.apk
-
