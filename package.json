@@ -1,0 +1,10 @@
+{
+  "name": "smsapp",
+  "version": "1.0.0",
+  "description": "Envio de SMS via SIM selecionado",
+  "scripts": {
+    "build-android": "cordova build android --release"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
