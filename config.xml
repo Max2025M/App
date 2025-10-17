@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.exemplo.smsapp" version="1.0.0"
+        xmlns="http://www.w3.org/ns/widgets"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>SMSApp</name>
+  <description>Envio de SMS via SIM escolhido</description>
+  <author email="voce@exemplo.com" href="http://exemplo.com">Voce</author>
+  <content src="index.html" />
+
+  <platform name="android">
+    <allow-intent href="sms:*" />
+    <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
+      <uses-permission android:name="android.permission.SEND_SMS" />
+      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+      <uses-permission android:name="android.permission.READ_SMS" />
+    </edit-config>
+  </platform>
+</widget>
