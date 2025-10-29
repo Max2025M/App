@@ -1,9 +1,9 @@
 {
   "name": "smsapp",
   "version": "1.0.0",
-  "description": "Envio de SMS via Termux API embutida",
+  "description": "Envio de SMS via Cordova",
   "scripts": {
-    "build": "echo 'O build será feito pelo Termux API Android embutido'"
+    "build-android": "cordova build android --release"
   },
   "dependencies": {},
   "devDependencies": {}
