@@ -5,10 +5,10 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
   <name>SMSApp</name>
-  <description>Envio de SMS via Cordova</description>
+  <description>Envio de SMS via Termux API embutido</description>
   <author email="voce@exemplo.com" href="http://exemplo.com">Voce</author>
 
-  <content src="index.html" />
+  <content src="www/index.html" />
 
   <preference name="Fullscreen" value="true" />
   <preference name="AndroidPersistentFileLocation" value="Internal" />
@@ -22,4 +22,5 @@
       <uses-permission android:name="android.permission.RECEIVE_SMS" />
     </edit-config>
   </platform>
+
 </widget>
