@@ -16,25 +16,25 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install Cordova
+    - name: Instalar Cordova
       run: npm install -g cordova
 
-    - name: Install project dependencies
+    - name: Instalar dependências do projeto
       run: npm install
 
-    - name: Remove Android platform (limpar cache)
+    - name: Remover plataforma Android (limpar cache)
       run: cordova platform rm android || true
 
-    - name: Add Android platform
+    - name: Adicionar plataforma Android
       run: cordova platform add android
 
-    - name: Add SMS plugin
-      run: cordova plugin add cordova-plugin-sms-receiver-sender || true
+    - name: Adicionar plugin Termux API embutido
+      run: cordova plugin add ./cordova-plugin-termux-api
 
-    - name: Build APK unsigned
+    - name: Compilar APK (unsigned)
       run: cordova build android --release -- --packageType=apk
 
-    - name: Gerar keystore temporário
+    - name: Gerar Keystore temporário
       run: |
         KEYSTORE_FILE="temp-release-key.keystore"
         KEY_ALIAS="tempkey"
@@ -53,24 +53,24 @@ jobs:
         echo "STOREPASS=$STOREPASS" >> $GITHUB_ENV
         echo "KEYPASS=$KEYPASS" >> $GITHUB_ENV
 
-    - name: Sign APK
+    - name: Assinar APK
       run: |
         jarsigner -verbose \
-          -sigalg SHA1withRSA -digestalg SHA1 \
+          -sigalg SHA256withRSA -digestalg SHA-256 \
           -keystore $KEYSTORE_FILE \
           -storepass $STOREPASS \
           -keypass $KEYPASS \
           platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
 
-    - name: Align APK
+    - name: Alinhar APK
       run: |
         sudo apt-get install -y zipalign
         zipalign -v 4 \
           platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk \
           platforms/android/app/build/outputs/apk/release/app-release-signed.apk
 
-    - name: Upload APK assinado
+    - name: Enviar APK assinado como artefato
       uses: actions/upload-artifact@v4
       with:
-        name: smsApp-release-signed-apk
+        name: SMSApp-TermuxAPI-Release
         path: platforms/android/app/build/outputs/apk/release/app-release-signed.apk
