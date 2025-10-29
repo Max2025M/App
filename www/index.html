@@ -5,119 +5,96 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMSApp - Envio de SMS</title>
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #f0f4f8;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
 
-  header {
-    width: 100%;
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    color: #fff;
-    text-align: center;
-    padding: 20px 10px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
+header {
+  width: 100%;
+  background: linear-gradient(90deg,#00c6ff,#0072ff);
+  color: #fff;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-  #simSelect {
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.95rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
+#simSelect {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+}
 
-  main {
-    width: 90%;
-    max-width: 500px;
-    background: #fff;
-    margin-top: 20px;
-    border-radius: 15px;
-    padding: 25px 20px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
+main {
+  width: 90%;
+  max-width: 500px;
+  background: #fff;
+  margin-top: 20px;
+  border-radius: 15px;
+  padding: 25px 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-  input, textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    box-sizing: border-box;
-    transition: 0.3s;
-  }
+input, textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
 
-  input:focus, textarea:focus {
-    border-color: #0072ff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0,114,255,0.3);
-  }
+button {
+  background: linear-gradient(90deg,#00c6ff,#0072ff);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-  button {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    color: #fff;
-    border: none;
-    padding: 12px;
-    font-size: 1.1rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: bold;
-  }
+button:hover { opacity: 0.85; }
 
-  button:hover { opacity: 0.85; }
-
-  .status-container { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-  .status-card {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-left: 5px solid #0072ff;
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-
-  .status-success { color: green; font-weight: bold; }
-  .status-error { color: red; font-weight: bold; }
-
-  .btn-small {
-    background: #0072ff;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: 0.3s;
-  }
-
-  .btn-small:hover { opacity: 0.85; }
-
-  @media (max-width: 600px) {
-    header { flex-direction: column; font-size: 1.3rem; padding: 15px; }
-    main { padding: 20px; }
-    button { font-size: 1rem; padding: 10px; }
-  }
+.status-container { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.status-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-left: 5px solid #0072ff;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.status-success { color: green; font-weight: bold; }
+.status-error { color: red; font-weight: bold; }
+.btn-small {
+  background: #0072ff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.btn-small:hover { opacity: 0.85; }
 </style>
 </head>
 <body>
@@ -128,13 +105,13 @@
 </header>
 
 <main>
-  <label for="numeros">Números de telefone (separados por vírgula):</label>
+  <label for="numeros">Números de telefone:</label>
   <textarea id="numeros" rows="3" placeholder="Ex: 841234567,842345678"></textarea>
 
-  <label for="mensagem">Digite a mensagem:</label>
-  <textarea id="mensagem" rows="4" placeholder="Escreva sua mensagem aqui..."></textarea>
+  <label for="mensagem">Mensagem:</label>
+  <textarea id="mensagem" rows="4" placeholder="Escreva sua mensagem..."></textarea>
 
-  <button id="enviar">Iniciar envio</button>
+  <button id="enviar">Enviar SMS</button>
 
   <div class="status-container" id="statusContainer"></div>
 </main>
@@ -148,21 +125,23 @@ document.addEventListener("deviceready", () => {
   const enviarBtn = document.getElementById("enviar");
   const statusContainer = document.getElementById("statusContainer");
 
-  // Detectar SIMs reais
+  // Detecta SIM reais
   function carregarSIMs() {
-    if(window.SIM && SIM.getSimInfo) {
-      SIM.getSimInfo((sims) => {
-        if(sims.length === 0) {
+    if (window.SIM) {
+      SIM.getSimInfo(
+        (sims) => {
+          simSelect.innerHTML = "";
+          sims.forEach((sim, index) => {
+            let option = document.createElement("option");
+            option.value = index;
+            option.textContent = sim.carrierName || `SIM${index+1}`;
+            simSelect.appendChild(option);
+          });
+        },
+        (err) => {
           simSelect.innerHTML = '<option value="0">SIM1</option>';
-          return;
         }
-        sims.forEach((sim, index) => {
-          let option = document.createElement("option");
-          option.value = index;
-          option.textContent = sim.displayName || `SIM${index+1}`;
-          simSelect.appendChild(option);
-        });
-      }, () => { simSelect.innerHTML = '<option value="0">SIM1</option>'; });
+      );
     } else {
       simSelect.innerHTML = '<option value="0">SIM1</option>';
     }
@@ -171,31 +150,32 @@ document.addEventListener("deviceready", () => {
   carregarSIMs();
 
   function enviarSMS(numero, mensagem, simIndex, card) {
-    SMS.send({phoneNumber: "+258"+numero, message: mensagem, simSlot: simIndex})
-      .then(() => {
+    SMS.send(
+      { phoneNumber: numero, message: mensagem, simSlot: simIndex },
+      () => {
         card.innerHTML = `<strong>${numero}</strong><span class="status-success">✅ Enviado (SIM ${simIndex+1})</span>
         <div>
           <button class="btn-small" onclick="this.parentNode.parentNode.remove()">Excluir</button>
-          <button class="btn-small" onclick="reenviar('${numero}', ${simIndex}, this)">Reenviar</button>
         </div>`;
-      })
-      .catch(() => {
+      },
+      (err) => {
         card.innerHTML = `<strong>${numero}</strong><span class="status-error">❌ Erro</span>
         <div>
           <button class="btn-small" onclick="this.parentNode.parentNode.remove()">Excluir</button>
-          <button class="btn-small" onclick="reenviar('${numero}', ${simIndex}, this)">Reenviar</button>
+          <button class="btn-small" onclick="reenviar('${numero}',${simIndex},this)">Reenviar</button>
         </div>`;
-      });
+      }
+    );
   }
 
   enviarBtn.addEventListener("click", () => {
     const mensagem = mensagemInput.value.trim();
-    const numeros = numerosInput.value.replace(/[^0-9,]/g,"").split(",").flatMap(n => n.match(/\d{9}/g) || []);
+    const numeros = numerosInput.value.replace(/[^0-9,]/g, "").split(",").flatMap(n => n.match(/\d{9}/g) || []);
     const simIndex = parseInt(simSelect.value);
 
-    if(!mensagem || numeros.length === 0) { alert("Preencha todos os campos."); return; }
-    statusContainer.innerHTML = "";
+    if (!mensagem || numeros.length === 0) { alert("Preencha todos os campos."); return; }
 
+    statusContainer.innerHTML = "";
     numeros.forEach(num => {
       const card = document.createElement("div");
       card.className = "status-card";
@@ -210,9 +190,11 @@ function reenviar(numero, simIndex, btn) {
   const card = btn.closest(".status-card");
   const mensagem = document.getElementById("mensagem").value.trim();
   card.querySelector("span").textContent = "Reenviando...";
-  SMS.send({phoneNumber: "+258"+numero, message: mensagem, simSlot: simIndex})
-    .then(() => { card.querySelector("span").textContent = "✅ Reenviado"; })
-    .catch(() => { card.querySelector("span").textContent = "❌ Erro no reenvio"; });
+  SMS.send(
+    { phoneNumber: numero, message: mensagem, simSlot: simIndex },
+    () => { card.querySelector("span").textContent = "✅ Reenviado"; },
+    () => { card.querySelector("span").textContent = "❌ Erro no reenvio"; }
+  );
 }
 </script>
 </body>
