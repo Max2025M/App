@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envio de SMS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+  body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #0072ff, #00c6ff);
+    min-height: 100vh;
+  }
+
+  header {
+    width: 100%;
+    padding: 20px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  main {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 15px;
+    display: block;
+  }
+
+  textarea, input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  textarea:focus, input:focus, select:focus {
+    border-color: #0072ff;
+    box-shadow: 0 0 8px rgba(0,114,255,0.3);
+  }
+
+  button {
+    background: linear-gradient(90deg,#00c6ff,#0072ff);
+    color: white;
+    border: none;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
+
+  .status-container {
+    margin-top: 25px;
+  }
+
+  .status-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: 0.3s;
+  }
+
+  .status-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .status-success { color: green; font-weight: bold; }
+  .status-error { color: red; font-weight: bold; }
+
+  .btn-small {
+    background: #0072ff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  .btn-small:hover { opacity: 0.8; }
+
+  @media (max-width: 600px) {
+    main { width: 95%; padding: 15px; }
+    header { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  Envio de SMS
+</header>
+
+<main>
+  <label for="simSelect">Escolher SIM:</label>
+  <select id="simSelect"></select>
+
+  <label for="numeros">Números de telefone:</label>
+  <textarea id="numeros" rows="3" placeholder="Ex: 841234567,842345678"></textarea>
+
+  <label for="mensagem">Digite a mensagem:</label>
+  <textarea id="mensagem" rows="3" placeholder="Escreva sua mensagem aqui..."></textarea>
+
+  <button id="enviar">Enviar SMS</button>
+
+  <div class="status-container" id="statusContainer"></div>
+</main>
+
+<script src="cordova.js"></script>
+<script>
+document.addEventListener("deviceready", initApp);
+
+async function initApp() {
+  const simSelect = document.getElementById("simSelect");
+
+  try {
+    // Obter informações dos SIMs disponíveis via Termux API embutido
+    const sims = await new Promise((resolve, reject) => {
+      Termux.telephonyInfo(info => resolve(info.sim_info || []), reject);
+    });
+
+    simSelect.innerHTML = sims.map((sim, i) =>
+      `<option value="${i}">${sim.operator_name || 'SIM ' + (i+1)}</option>`
+    ).join("");
+  } catch (e) {
+    simSelect.innerHTML = '<option value="0">SIM padrão</option>';
+  }
+
+  document.getElementById("enviar").addEventListener("click", enviarSMS);
+}
+
+async function enviarSMS() {
+  const numerosInput = document.getElementById("numeros").value;
+  const mensagem = document.getElementById("mensagem").value.trim();
+  const chip = parseInt(document.getElementById("simSelect").value);
+  const statusContainer = document.getElementById("statusContainer");
+
+  if (!mensagem || !numerosInput) {
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  const numeros = numerosInput.replace(/[^0-9,]/g,"").split(",").flatMap(n => n.match(/\d{9}/g) || []);
+  statusContainer.innerHTML = "";
+
+  for (let num of numeros) {
+    const card = document.createElement("div");
+    card.className = "status-card";
+    card.innerHTML = `<strong>${num}</strong><span>Enviando...</span>`;
+    statusContainer.appendChild(card);
+
+    try {
+      await new Promise((resolve, reject) => {
+        Termux.smsSend({number: "+258" + num, text: mensagem, sim: chip}, resolve, reject);
+      });
+      card.innerHTML = `<strong>${num}</strong><span class="status-success">✅ Enviado com sucesso (SIM ${chip+1})</span>
+        <button class="btn-small" onclick="this.parentNode.remove()">Excluir</button>
+        <button class="btn-small" onclick="reenviar('${num}',${chip},this)">Reenviar</button>`;
+    } catch (e) {
+      card.innerHTML = `<strong>${num}</strong><span class="status-error">❌ Falha ao enviar</span>
+        <button class="btn-small" onclick="this.parentNode.remove()">Excluir</button>
+        <button class="btn-small" onclick="reenviar('${num}',${chip},this)">Reenviar</button>`;
+    }
+  }
+}
+
+async function reenviar(numero, chip, btn) {
+  const card = btn.parentNode;
+  const statusSpan = card.querySelector("span");
+  statusSpan.textContent = "Reenviando...";
+
+  try {
+    await new Promise((resolve, reject) => {
+      Termux.smsSend({number: "+258" + numero, text: "Reenvio de teste", sim: chip}, resolve, reject);
+    });
+    card.innerHTML = `<strong>${numero}</strong><span class="status-success">✅ Reenviado com sucesso</span>
+      <button class="btn-small" onclick="this.parentNode.remove()">Excluir</button>`;
+  } catch(e) {
+    statusSpan.textContent = "❌ Erro no reenvio";
+  }
+}
+</script>
+</body>
+</html>
