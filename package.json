@@ -1,7 +1,7 @@
 {
   "name": "smsapp",
   "version": "1.0.0",
-  "description": "Envio de SMS via SIM selecionado",
+  "description": "Envio de SMS via Termux API embutida",
   "scripts": {
     "build-android": "cordova build android --release"
   },
