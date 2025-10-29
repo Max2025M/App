@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin id="cordova-plugin-termux-api" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>TermuxAPI</name>
+  <js-module src="www/termux.js" name="Termux">
+    <clobbers target="Termux" />
+  </js-module>
+  <platform name="android">
+    <source-file src="src/android/TermuxApi.java" target-dir="src/com/exemplo/smsapp/" />
+  </platform>
+</plugin>
