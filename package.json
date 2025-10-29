@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Envio de SMS via Termux API embutida",
   "scripts": {
-    "build-android": "cordova build android --release"
+    "build": "echo 'O build será feito pelo Termux API Android embutido'"
   },
   "dependencies": {},
   "devDependencies": {}
