@@ -1,4 +1,4 @@
-name: Build APK SMSApp
+name: Build Android APK Assinado
 
 on:
   workflow_dispatch:
@@ -11,10 +11,25 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Setup Java e Gradle
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk gradle
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install Cordova
+      run: npm install -g cordova
+
+    - name: Install project dependencies
+      run: npm install
+
+    - name: Remove Android platform
+      run: cordova platform rm android || true
+
+    - name: Add Android platform
+      run: cordova platform add android
+
+    - name: Build APK unsigned
+      run: cordova build android --release -- --packageType=apk
 
     - name: Gerar keystore temporário
       run: |
@@ -35,23 +50,24 @@ jobs:
         echo "STOREPASS=$STOREPASS" >> $GITHUB_ENV
         echo "KEYPASS=$KEYPASS" >> $GITHUB_ENV
 
-    - name: Build APK nativo via Gradle
-      run: ./gradlew assembleRelease
-
-    - name: Assinar e alinhar APK
+    - name: Sign APK
       run: |
-        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-        -keystore $KEYSTORE_FILE \
-        -storepass $STOREPASS \
-        -keypass $KEYPASS \
-        app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
+        jarsigner -verbose \
+          -sigalg SHA1withRSA -digestalg SHA1 \
+          -keystore $KEYSTORE_FILE \
+          -storepass $STOREPASS \
+          -keypass $KEYPASS \
+          platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
 
+    - name: Align APK
+      run: |
+        sudo apt-get install -y zipalign
         zipalign -v 4 \
-        app/build/outputs/apk/release/app-release-unsigned.apk \
-        app/build/outputs/apk/release/app-release-signed.apk
+          platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk \
+          platforms/android/app/build/outputs/apk/release/app-release-signed.apk
 
-    - name: Upload APK
+    - name: Upload APK assinado
       uses: actions/upload-artifact@v4
       with:
-        name: SMSApp-TermuxAPI-Release
-        path: app/build/outputs/apk/release/app-release-signed.apk
+        name: smsApp-release-signed-apk
+        path: platforms/android/app/build/outputs/apk/release/app-release-signed.apk
