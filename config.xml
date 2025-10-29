@@ -5,7 +5,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
   <name>SMSApp</name>
-  <description>Envio de SMS via SIM escolhido</description>
+  <description>Envio de SMS via Termux API embutida</description>
   <author email="voce@exemplo.com" href="http://exemplo.com">Voce</author>
   <content src="index.html" />
 
@@ -13,20 +13,12 @@
   <preference name="AndroidPersistentFileLocation" value="Internal" />
 
   <platform name="android">
-    <!-- Permitir links SMS -->
     <allow-intent href="sms:*" />
-
-    <!-- Permissões Android necessárias -->
     <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
       <uses-permission android:name="android.permission.SEND_SMS" />
       <uses-permission android:name="android.permission.READ_PHONE_STATE" />
       <uses-permission android:name="android.permission.READ_SMS" />
-    </edit-config>
-
-    <!-- Permissão opcional para receber SMS (se usar plugin de leitura) -->
-    <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
       <uses-permission android:name="android.permission.RECEIVE_SMS" />
     </edit-config>
   </platform>
-
 </widget>
