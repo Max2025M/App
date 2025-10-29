@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMSApp - Envio de SMS</title>
+<style>
+  /* Fonte e cores principais */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f4f8;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* Cabeçalho */
+  header {
+    width: 100%;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: #fff;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .sim-info {
+    position: absolute;
+    right: 15px;
+    top: 18px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* Container principal */
+  main {
+    width: 90%;
+    max-width: 500px;
+    background: #fff;
+    margin-top: 25px;
+    border-radius: 15px;
+    padding: 25px 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* Inputs e textarea */
+  input, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: 0.3s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: #0072ff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,114,255,0.3);
+  }
+
+  /* Botão enviar */
+  button {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+  }
+
+  button:hover {
+    opacity: 0.85;
+  }
+
+  /* Container de status */
+  .status-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .status-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-left: 5px solid #0072ff;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .status-success { color: green; font-weight: bold; }
+  .status-error { color: red; font-weight: bold; }
+
+  .btn-small {
+    background: #0072ff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: 0.3s;
+  }
+
+  .btn-small:hover {
+    opacity: 0.85;
+  }
+
+  /* Responsividade */
+  @media (max-width: 600px) {
+    header { font-size: 1.3rem; }
+    button { font-size: 1rem; padding: 10px; }
+    main { padding: 20px; }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  SMSApp - Envio de SMS
+  <div class="sim-info">Selecione o SIM ao enviar</div>
+</header>
+
+<main>
+  <label for="numeros">Números de telefone (separados por vírgula):</label>
+  <textarea id="numeros" rows="3" placeholder="Ex: 841234567,842345678"></textarea>
+
+  <label for="mensagem">Digite a mensagem:</label>
+  <textarea id="mensagem" rows="4" placeholder="Escreva sua mensagem aqui..."></textarea>
+
+  <button id="enviar">Iniciar envio</button>
+
+  <div class="status-container" id="statusContainer"></div>
+</main>
+
+<script src="cordova.js"></script>
+<script>
+document.getElementById("enviar").addEventListener("click", () => {
+  const numerosInput = document.getElementById("numeros").value;
+  const mensagem = document.getElementById("mensagem").value.trim();
+  const statusContainer = document.getElementById("statusContainer");
+  statusContainer.innerHTML = "";
+
+  if (!mensagem || !numerosInput) {
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  let numeros = numerosInput.replace(/[^0-9,]/g,"").split(",").flatMap(n => n.match(/\d{9}/g) || []);
+  if(numeros.length === 0){
+    alert("Nenhum número válido encontrado!");
+    return;
+  }
+
+  let chip = prompt("Usar qual SIM? 0 (SIM1) ou 1 (SIM2):", "0");
+  chip = parseInt(chip) || 0;
+
+  numeros.forEach(num => {
+    const card = document.createElement("div");
+    card.className = "status-card";
+    card.innerHTML = `<strong>${num}</strong><span>Enviando...</span>`;
+    statusContainer.appendChild(card);
+
+    try {
+      SMS.send({
+        phoneNumber: "+258" + num,
+        message: mensagem,
+        simSlot: chip,
+        replaceLineBreaks: false,
+        android: { intent: "" }
+      }, () => {
+        card.innerHTML = `<strong>${num}</strong><span class="status-success">✅ Enviado com sucesso (SIM ${chip+1})</span>
+          <button class="btn-small" onclick="this.parentNode.remove()">Excluir</button>`;
+      }, (err) => {
+        card.innerHTML = `<strong>${num}</strong><span class="status-error">❌ Erro ao enviar</span>
+          <button class="btn-small" onclick="this.parentNode.remove()">Excluir</button>`;
+        console.error(err);
+      });
+    } catch(e){
+      card.innerHTML = `<strong>${num}</strong><span class="status-error">❌ Erro</span>`;
+    }
+  });
+});
+</script>
+
+</body>
+</html>
