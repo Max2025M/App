@@ -61,7 +61,6 @@ jobs:
 
     - name: Align APK
       run: |
-        sudo apt-get update
         sudo apt-get install -y zipalign
         zipalign -v 4 \
           platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk \
@@ -70,5 +69,5 @@ jobs:
     - name: Upload APK assinado
       uses: actions/upload-artifact@v4
       with:
-        name: SMSApp-release-signed-apk
+        name: smsApp-release-signed-apk
         path: platforms/android/app/build/outputs/apk/release/app-release-signed.apk
